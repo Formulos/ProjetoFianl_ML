@@ -10,11 +10,14 @@ public class RollerAgent : Agent
     public List<GameObject> worldState = new List<GameObject>();
     Rigidbody rBody;
     int hunger;
+    private int foodQuantity;
 
     //float starving = 0;
     void Start () 
     {
         world = this.transform.parent.gameObject.GetComponent<WorldState>();
+        foodQuantity = this.transform.parent.gameObject.GetComponent<FoodGenerator>().foodQuantity;
+        print(foodQuantity);
         world.assign(this);
         //print("assigning agent");
         //world = this.transform.parent.gameObject.GetComponent<WorldState>();
@@ -24,8 +27,7 @@ public class RollerAgent : Agent
 
     //public Transform Target;
     public override void OnEpisodeBegin()
-    {
-        
+    {        
         
 
         hunger = 5;
@@ -72,7 +74,8 @@ public class RollerAgent : Agent
         //sensor.AddObservation(this.starving);
 
         //Vector2 rpos = new Vector2(this.transform.localPosition.x, this.transform.localPosition.z);
-        for(int i=0;i<1;i++){
+        for(int i=0;i<foodQuantity;i++){
+            //print(worldState[10].transform.localPosition);
             Vector3 foodPosition = worldState[i].transform.localPosition;
             sensor.AddObservation(foodPosition);
             //print("Food_position: " + (foodPosition).ToString());
@@ -99,7 +102,7 @@ public class RollerAgent : Agent
             controlSignal.z = action[1];
             rBody.AddForce(controlSignal * speed);
             if(this.transform.localPosition.y < -0.1f){
-                SetReward(-1f);
+                AddReward(-1f);
                 EndEpisode();
             }
         //penalidade de morrer de fome

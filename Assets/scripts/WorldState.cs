@@ -16,7 +16,7 @@ public class WorldState : MonoBehaviour
     public bool assign(RollerAgent agent){
         //print("Agente counter :"+ agentCount.ToString());
         if(agentCount <32){
-            print("agent_assigned");
+            //print("agent_assigned");
             agentlist[agentCount] = agent;
             agentCount+= 1;
             return true;
