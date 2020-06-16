@@ -18,21 +18,18 @@ default:
     summary_freq: 10000
     use_recurrent: false
     vis_encode_type: simple
+
+RollerBall:
+    max_steps: 6000000
+    normalize: false
+    epsilon: 0.15
+    num_epoch: 5
+    lambd: 0.95
+    beta: 5.0e-3
+    batch_size: 1024
+    buffer_size: 10240
+    num_epoch: 4
     reward_signals:
         extrinsic:
             strength: 1.0
             gamma: 0.99
-
-RollerBall:
-    trainer: sac
-    max_steps: 5000000
-    normalize: false
-    batch_size: 640
-    buffer_size: 64000
-    learning_rate_schedule: constant
-    buffer_init_steps: 1000
-    init_entcoef: 1.0
-    save_replay_buffer: false
-    tau: 0.006
-    steps_per_update : 1
-        
