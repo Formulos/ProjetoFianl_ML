@@ -6,8 +6,7 @@ public class WorldState : MonoBehaviour
 {
     public List<GameObject> worldState = new List<GameObject>();
 
-    private RollerAgent[] agentlist = new RollerAgent[32];
-    public int agentCount;
+    public List<RollerAgent> agentlist = new List<RollerAgent>();
 
     private void Start() {
         //agentCount = 0;
@@ -15,40 +14,20 @@ public class WorldState : MonoBehaviour
 
     public bool assign(RollerAgent agent){
         //print("Agente counter :"+ agentCount.ToString());
-        if(agentCount <32){
             //print("agent_assigned");
-            agentlist[agentCount] = agent;
-            agentCount+= 1;
-            return true;
-        }
-        print("Agent overflow");
-        return false;
+        agentlist.Add(agent);
+        return true;
 
     }
 
-    public void updateState(int id){
-        GameObject new_food = this.GetComponent<FoodGenerator>().NewFood(id);
-        worldState[id] = new_food;
+    public void Eat(){
+        this.GetComponent<FoodGenerator>().NewFood();
         
-        for(int i=0;i<agentCount;i++){
-            agentlist[i].worldState = worldState;
-        }
     }
 
-    public void requestState(){        
-        for(int i=0;i<agentCount;i++){
-            //print(agentlist[i]);
-            agentlist[i].worldState = worldState;
-        }
-    }
 
     public void requestClear(){
         this.GetComponent<FoodGenerator>().CleanCreate();
-
-        for(int i=0;i<agentCount;i++){
-            //print(agentlist[i]);
-            agentlist[i].worldState = worldState;
-        }
     }
 
 }

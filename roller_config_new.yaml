@@ -18,9 +18,30 @@ default:
     summary_freq: 10000
     use_recurrent: false
     vis_encode_type: simple
+    self_play:
+        window: 10
+        play_against_latest_model_ratio: 0.5
+        save_steps: 50000
+        swap_steps: 50000
+        team_change: 100000
 
 RollerBall:
-    max_steps: 6000000
+    max_steps: 9000000
+    normalize: false
+    epsilon: 0.15
+    num_epoch: 5
+    lambd: 0.95
+    beta: 5.0e-3
+    batch_size: 1024
+    buffer_size: 10240
+    num_epoch: 4
+    reward_signals:
+        extrinsic:
+            strength: 1.0
+            gamma: 0.99
+
+RollerBallC:
+    max_steps: 9000000
     normalize: false
     epsilon: 0.15
     num_epoch: 5

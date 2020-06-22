@@ -7,18 +7,21 @@ using UnityEngine.SceneManagement;
 public class RollerAgent : Agent
 {
     public WorldState world;
-    public List<GameObject> worldState = new List<GameObject>();
+    //public List<RollerAgent> agentlist = new List<RollerAgent>();
     Rigidbody rBody;
-    int hunger;
+    //int hunger;
     private int foodQuantity;
     public GameObject spawnZone;
+
+    public GameObject comp1;
+    public GameObject comp2;
+    public GameObject enemy1;
 
     //float starving = 0;
     void Start () 
     {
         world = this.transform.parent.gameObject.GetComponent<WorldState>();
         foodQuantity = this.transform.parent.gameObject.GetComponent<FoodGenerator>().foodQuantity;
-        print(foodQuantity);
         world.assign(this);
         //print("assigning agent");
         //world = this.transform.parent.gameObject.GetComponent<WorldState>();
@@ -31,7 +34,7 @@ public class RollerAgent : Agent
     {        
         
 
-        hunger = 10;
+        //hunger = 10;
         rBody = this.GetComponent<Rigidbody>();
         //starving = 0;
         //world.updateState(0);
@@ -52,10 +55,6 @@ public class RollerAgent : Agent
         Vector3 pos = new Vector3(Random.Range(xmin, xmax), 0.5f, Random.Range(zmin, zmax));
 
         this.transform.position = pos;
-        //}
-        world.requestState();
-
-        // Move the target to a new spot
     }
     public override void CollectObservations(VectorSensor sensor)
     {
@@ -69,17 +68,33 @@ public class RollerAgent : Agent
         // Agent velocity
         sensor.AddObservation(rBody.velocity.x);
         sensor.AddObservation(rBody.velocity.z);
+
+        sensor.AddObservation(comp1.transform.localPosition);
+        sensor.AddObservation(comp1.GetComponent<Rigidbody>().velocity.x);
+        sensor.AddObservation(comp1.GetComponent<Rigidbody>().velocity.z);
+
+        sensor.AddObservation(comp2.transform.localPosition);
+        sensor.AddObservation(comp2.GetComponent<Rigidbody>().velocity.x);
+        sensor.AddObservation(comp2.GetComponent<Rigidbody>().velocity.z);
+
+        sensor.AddObservation(enemy1.transform.localPosition);
+        sensor.AddObservation(enemy1.GetComponent<Rigidbody>().velocity.x);
+        sensor.AddObservation(enemy1.GetComponent<Rigidbody>().velocity.z);
+
         //print("x_velocity: " + (rBody.velocity.x).ToString());
         //print("z_velocity: " + (rBody.velocity.z).ToString());
 
         //sensor.AddObservation(this.starving);
         //Vector2 rpos = new Vector2(this.transform.localPosition.x, this.transform.localPosition.z);
-/*         for(int i=0;i<foodQuantity;i++){
-            //print(worldState[10].transform.localPosition);
-            Vector3 foodPosition = worldState[i].transform.localPosition;
-            sensor.AddObservation(foodPosition.x);
-            sensor.AddObservation(foodPosition.z);
-            sensor.AddObservation(Vector3.Distance(foodPosition, this.transform.localPosition));
+/*         agentlist = this.transform.parent.GetComponent<WorldState>().agentlist;
+        print(agentlist.Count);
+        for(int i=0;i<agentlist.Count;i++){
+            if(this == agentlist[i]){
+                print("AAAAAAAAAAAAAAAAA");
+            }
+            else{
+                print("BBBBBBBBBBBBBBBBBB");
+            }
 
         }  */
     }
@@ -130,8 +145,20 @@ public class RollerAgent : Agent
         } */
         if(this.transform.localPosition.y < -0.1f){
             AddReward(-1f);
-            EndEpisode();
-        }
+            //EndEpisode();
+            this.rBody.angularVelocity = Vector3.zero;
+            this.rBody.velocity = Vector3.zero;
+
+            float xmin = spawnZone.transform.position.x - spawnZone.transform.lossyScale.x*3;
+            float xmax = spawnZone.transform.position.x + spawnZone.transform.lossyScale.x*3;
+
+            float zmin = spawnZone.transform.position.z - spawnZone.transform.lossyScale.z*3;
+            float zmax = spawnZone.transform.position.z + spawnZone.transform.lossyScale.z*3;
+
+            Vector3 pos = new Vector3(Random.Range(xmin, xmax), 0.5f, Random.Range(zmin, zmax));
+
+            this.transform.position = pos;
+            }
         //penalidade de morrer de fome
         AddReward(-0.0005f);
         //print(starving);
@@ -145,21 +172,38 @@ public class RollerAgent : Agent
     {
         if (collision.gameObject.CompareTag("food"))
         {
-            int id = collision.gameObject.GetComponent<Food>().id;
             //print("debug pre pos: "+(other.transform.position).ToString());
             //print("debug pre pos: "+(worldState[id].transform.localPosition).ToString());
             Destroy(collision.gameObject);
-            world.updateState(id);
+            world.Eat();
             AddReward(1f);
             //starving = 0;
-            hunger--;
+/*             hunger--;
             if(hunger == 0){
                 SetReward(2f);
                 //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                EndEpisode();
-            }
+                //EndEpisode();
+            } */
             //print("debug post pos: "+(worldState[id].transform.localPosition).ToString());
         }
+
+    }
+
+    public void eaten(){
+        AddReward(-0.7f);
+
+        this.rBody.angularVelocity = Vector3.zero;
+        this.rBody.velocity = Vector3.zero;
+
+        float xmin = spawnZone.transform.position.x - spawnZone.transform.lossyScale.x*3;
+        float xmax = spawnZone.transform.position.x + spawnZone.transform.lossyScale.x*3;
+
+        float zmin = spawnZone.transform.position.z - spawnZone.transform.lossyScale.z*3;
+        float zmax = spawnZone.transform.position.z + spawnZone.transform.lossyScale.z*3;
+
+        Vector3 pos = new Vector3(Random.Range(xmin, xmax), 0.5f, Random.Range(zmin, zmax));
+
+        this.transform.position = pos;
 
     }
     
