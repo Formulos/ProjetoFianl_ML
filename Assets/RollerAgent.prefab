@@ -166,7 +166,7 @@ MonoBehaviour:
     VectorActionSize: 02000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 11400000, guid: 7e2c1cd32ac4c2c4390b5d0e8160f016, type: 3}
   m_InferenceDevice: 1
   m_BehaviorType: 0
   m_BehaviorName: RollerBall

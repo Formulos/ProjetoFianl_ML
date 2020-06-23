@@ -176,7 +176,7 @@ public class RollerAgent : Agent
             //print("debug pre pos: "+(worldState[id].transform.localPosition).ToString());
             Destroy(collision.gameObject);
             world.Eat();
-            AddReward(1f);
+            AddReward(0.5f);
             //starving = 0;
 /*             hunger--;
             if(hunger == 0){
@@ -190,7 +190,7 @@ public class RollerAgent : Agent
     }
 
     public void eaten(){
-        AddReward(-0.7f);
+        AddReward(-0.9f);
 
         this.rBody.angularVelocity = Vector3.zero;
         this.rBody.velocity = Vector3.zero;
